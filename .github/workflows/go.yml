@@ -1,0 +1,43 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+
+#     - name: Build
+#       run: go build -v .
+
+    - name: Test
+      # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
+      run: go test -cover -v ./...
+
+    - name: Test Parallel
+      # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
+      run: go test -parallel 4 -cover -v ./...
+      # html格式查看cover信息： https://blog.golang.org/cover
+      # go test -covermode=count -coverprofile=count.out ./... && go tool cover -html=count.out
+
+      # -count=1可以跳过缓存（默认情况下，第一次执行过了，第二次就会有缓存）
+#      run: go test -count=1
