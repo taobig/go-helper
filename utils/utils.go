@@ -39,10 +39,10 @@ func listDir(dirPth string) (a []string) {
 	return files
 }
 
-func getCurrentDirectory() string {
+func getCurrentDir() (string, error) {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-	return strings.Replace(dir, "\\", "/", -1)
+	return strings.Replace(dir, "\\", "/", -1), nil
 }
