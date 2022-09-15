@@ -6,10 +6,6 @@ import (
 	"time"
 )
 
-func TestGetDateTime(t *testing.T) {
-	fmt.Println(time.Now().Format(time.RFC3339))
-}
-
 func TestGetDateTimeWithNanosecondString(t *testing.T) {
 	t.Parallel()
 
@@ -25,27 +21,44 @@ func TestGetDateTimeString(t *testing.T) {
 func TestParse(t *testing.T) {
 	t.Parallel()
 
-	_, err := Parse(time.UnixDate, "Wed Feb 25 11:06:39 PST 2015")
-	if err != nil {
-		t.Error(err)
-	}
-
-	fmt.Println(Parse("", "2020-01-01 00:00:00"))
-	//fmt.Println(Parse("", "2020-01-01 00:00:00.999999"))
-	var date string = "2020-01-01 00:00:00.999999"
-	t1, err := Parse("", date)
-	if err != nil {
-		t.Errorf("error:%v", err)
-	} else {
-		if t1.Year() != 2020 {
-			t.Errorf("Parse(%v):%v; expected %v", date, 2020, 2020)
+	{
+		_, err := Parse(time.UnixDate, "Wed Feb 25 11:06:39 PST 2015")
+		if err != nil {
+			t.Error(err)
 		}
 	}
 
-	date = "2020-01-01 00:00:00.999999"
-	_, err = Parse(time.RFC3339Nano, date)
-	if err == nil {
-		t.Errorf("Parse(%v, %v) failed; expected error", time.RFC3339Nano, date)
+	{
+		_, err := Parse(time.RFC3339, "2022-01-01T01:01:01+08:00")
+		if err != nil {
+			t.Error(err)
+		}
+
+		_, err = Parse(time.RFC3339, "2022-01-01T01:01:01Z")
+		if err != nil {
+			t.Error(err)
+		}
+	}
+
+	{
+		fmt.Println(Parse("", "2020-01-01 00:00:00.999999"))
+		var date string = "2020-01-01 00:00:00.999999"
+		t1, err := Parse("", date)
+		if err != nil {
+			t.Errorf("error:%v", err)
+		} else {
+			if t1.Year() != 2020 {
+				t.Errorf("Parse(%v):%v; expected %v", date, 2020, 2020)
+			}
+		}
+	}
+
+	{
+		date := "2020-01-01 00:00:00.999999"
+		_, err := Parse(time.RFC3339Nano, date)
+		if err == nil {
+			t.Errorf("Parse(%v, %v) failed; expected error", time.RFC3339Nano, date)
+		}
 	}
 
 }
