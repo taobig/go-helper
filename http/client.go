@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/taobig/go-helper/io"
+	stdio "io"
 	"log"
 	"net/http"
 	"net/url"
@@ -161,7 +162,7 @@ func DownloadFile(url, dir string) (string, error) {
 		if err != nil {
 			return localFilePath, err
 		}
-		if b == true {
+		if b {
 			suffixStartIndex := strings.LastIndex(filename, ".")
 			if suffixStartIndex == -1 { //without ext name
 				filenameNew = fmt.Sprintf("%s(%d)", filename, filenameAppendIndex)
@@ -203,20 +204,33 @@ func DownloadFile(url, dir string) (string, error) {
 	buf := make([]byte, bufferBytes)
 	var lastRecordDt = time.Now().Unix()
 	for {
-		size, _ := response.Body.Read(buf)
+		size, e := response.Body.Read(buf)
 		//读到文件结尾
-		if size == 0 {
-			break
-		} else {
-			downloadBytes = downloadBytes + int64(size)
-			localFile.Write(buf[:size])
+		if e != nil {
+			if e == stdio.EOF {
+				if size == 0 {
+					//log.Println("download complete")
+					break
+				}
+				// size > 0
+				//log.Println("read file end, but size > 0", size)
+			} else {
+				return localFilePath, err
+			}
+		}
+		//log.Println("read size:", size)
+		downloadBytes = downloadBytes + int64(size)
+		_, err = localFile.Write(buf[:size])
+		if err != nil {
+			return localFilePath, err
 		}
 		downloadRate = downloadBytes * 100 / totalBytes
-		if time.Now().Unix() > lastRecordDt+5 {
-			lastRecordDt += 5
-			log.Println(fmt.Sprintf("%d / %d     ==>%d%%  %s", downloadBytes, totalBytes, downloadRate, time.Now().String()))
+		now := time.Now()
+		if now.Unix() >= lastRecordDt+5 {
+			lastRecordDt = now.Unix()
+			log.Printf("%d / %d     ==>%d%%[%s]\n", downloadBytes, totalBytes, downloadRate, now.Format(time.RFC3339))
 		}
-
 	}
+
 	return localFilePath, nil
 }

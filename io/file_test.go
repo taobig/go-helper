@@ -15,34 +15,28 @@ func TestPathExist(t *testing.T) {
 	if err != nil {
 		t.Errorf("UserHomeDir() error:%v", err.Error())
 	}
-	var (
-		expected1 = true
-		expected2 = false
-	)
 
 	{
+		expected := true
 		actual1, err := PathExist(path)
 		if err != nil {
 			t.Errorf("TestPathExist(%v) error:%v", path, err.Error())
 		} else {
-			if actual1 != expected1 {
-				t.Errorf("TestPathExist(%v):%v; expected %v", path, actual1, expected1)
-			} else {
-				//t.Logf("TestPathExist(%v):%v; expected %v", path, actual1, expected1)
+			if actual1 != expected {
+				t.Errorf("TestPathExist(%v):%v; expected %v", path, actual1, expected)
 			}
 		}
 	}
 
 	{
+		expected := false
 		path += fmt.Sprintf("%d", rand.Int63())
 		actual2, err := PathExist(path)
 		if err != nil {
 			t.Errorf("TestPathExist(%v) error:%v", path, err.Error())
 		} else {
-			if actual2 != expected2 {
-				t.Errorf("TestPathExist(%v):%v; expected %v", path, actual2, expected2)
-			} else {
-				//t.Logf("TestPathExist(%v):%v; expected %v", path, actual2, expected2)
+			if actual2 != expected {
+				t.Errorf("TestPathExist(%v):%v; expected %v", path, actual2, expected)
 			}
 		}
 	}
