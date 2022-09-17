@@ -3,9 +3,13 @@ name: golangci-lint
 #on: [push, pull_request]
 on:
   push:
-    branches: [ master ]
+    #    branches: [ master ]
+    branches:
+      - '*'
   pull_request:
-    branches: [ master ]
+    #    branches: [ master ]
+    branches:
+      - '*'
 
 jobs:
   golangci:

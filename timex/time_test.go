@@ -46,10 +46,7 @@ func isEqual(actual, expected time.Time) bool {
 	//if actual.Year() != expected.Year() || actual.Month() != expected.Month() || actual.Day() != expected.Day() ||
 	//	actual.Hour() != expected.Hour() || actual.Minute() != expected.Minute() ||
 	//	actual.Second() != expected.Second() || actual.Nanosecond() != expected.Nanosecond() {
-	if actual.UnixNano() != expected.UnixNano() {
-		return false
-	}
-	return true
+	return actual.UnixNano() == expected.UnixNano()
 }
 
 func TestStartOfDay(t *testing.T) {
