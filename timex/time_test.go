@@ -1,106 +1,11 @@
 package timex
 
 import (
-	"github.com/taobig/go-helper/magic"
 	"testing"
 	"time"
 )
 
 var cstZone = time.FixedZone("GMT", 8*3600) // UTC+08
-
-func TestGetDateTime(t *testing.T) {
-	// "2022-01-01T08:00:00Z" (UTC)
-	// "2022-01-01T08:00:00+08:00" (UTC+8)
-	t.Log(time.Now().Format(time.RFC3339))
-	// "2006-01-02T15:04:05.999999999Z" (UTC)
-	// "2006-01-02T15:04:05.999999999+08:00" (UTC+8)
-	t.Log(time.Now().Format(time.RFC3339Nano))
-
-	{
-		//s := time.Now().In(time.UTC).Format("2006-01-02 00:00:00")
-		s := time.Now().In(time.UTC).Format(magic.SimpleDateLayout)
-		t.Log(s)
-	}
-	{
-		s := time.Now().In(time.UTC).Format(magic.SimpleDatetimeLayout)
-		t.Log(s)
-	}
-	{
-		s := time.Now().In(time.UTC).Format(magic.SimpleDatetimeNanoLayout)
-		t.Log(s)
-	}
-
-}
-
-// time.Parse() Usage
-func TestParse(t *testing.T) {
-	t.Parallel()
-
-	{
-		_, err := time.Parse(time.UnixDate, "Wed Feb 25 11:06:39 PST 2015")
-		if err != nil {
-			t.Error(err)
-		}
-	}
-
-	{
-		_, err := time.Parse(time.RFC3339, "2022-01-01T01:01:01+08:00")
-		if err != nil {
-			t.Error(err)
-		}
-
-		_, err = time.Parse(time.RFC3339, "2022-01-01T01:01:01Z")
-		if err != nil {
-			t.Error(err)
-		}
-	}
-
-	{
-		var date string = "2020-01-01 00:00:00.999999"
-		_, err := time.Parse("", date)
-		if err != nil {
-			// `layout` param can't be ""
-			//t.Errorf("error:%v", err)
-		} else {
-			t.Errorf("expected error, actual:nil")
-		}
-	}
-
-	{
-		date := "2020-01-01 00:00:00.999999"
-		_, err := time.Parse(time.RFC3339Nano, date)
-		if err == nil {
-			t.Errorf("time.Parse(%v, %v) failed; expected error", time.RFC3339Nano, date)
-		}
-	}
-
-}
-
-// time.ParseInLocation() Usage
-func TestParseInLocalLocation(t *testing.T) {
-	t.Parallel()
-
-	_, err := time.ParseInLocation(time.UnixDate, "Wed Feb 25 11:06:39 PST 2015", time.Local)
-	if err != nil {
-		t.Error(err)
-	}
-
-	date := "2020-01-01 00:00:00.999999"
-	_, err = time.ParseInLocation("", date, time.Local)
-	if err != nil {
-		// `layout` param can't be ""
-		// t.Logf("expected error:%+v", err)
-	} else {
-		t.Errorf("expected error, actual:nil")
-	}
-
-	date = "2020-01-01T00:00:00.999999Z"
-	_, err = time.ParseInLocation(time.RFC3339Nano, date, time.UTC)
-	if err != nil {
-		t.Errorf("Parse(time.RFC3339Nano, %v) failed; expected error", date)
-		t.Error(err)
-	}
-}
 
 func TestMillSecToTime(t *testing.T) {
 	var ts int64 = 1640995200123 // 2022-01-01 00:00:00.123 +0000 UTC
@@ -133,6 +38,286 @@ func TestMillSecToUtcTime(t *testing.T) {
 			t.Errorf("actual:%s; expected %s", actual, expected)
 		}
 		//t.Log(actual)
+	}
+
+}
+
+func isEqual(actual, expected time.Time) bool {
+	//if actual.Year() != expected.Year() || actual.Month() != expected.Month() || actual.Day() != expected.Day() ||
+	//	actual.Hour() != expected.Hour() || actual.Minute() != expected.Minute() ||
+	//	actual.Second() != expected.Second() || actual.Nanosecond() != expected.Nanosecond() {
+	if actual.UnixNano() != expected.UnixNano() {
+		return false
+	}
+	return true
+}
+
+func TestStartOfDay(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := StartOfDay(start)
+		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfDay(start)
+		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestTomorrow(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 1, 1, 1, 1, 111222333, time.Local)
+		actual := StartOfTomorrow(start)
+		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 1, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfTomorrow(start)
+		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestYesterday(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := StartOfYesterday(start)
+		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfYesterday(start)
+		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfDay(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := EndOfDay(start)
+		expected := time.Date(2000, 1, 2, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfDay(start)
+		expected := time.Date(2000, 1, 2, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfTomorrow(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := EndOfTomorrow(start)
+		expected := time.Date(2000, 1, 3, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfTomorrow(start)
+		expected := time.Date(2000, 1, 3, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfYesterday(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := EndOfYesterday(start)
+		expected := time.Date(2000, 1, 1, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfYesterday(start)
+		expected := time.Date(2000, 1, 1, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestStartOfHour(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := StartOfHour(start)
+		expected := time.Date(2000, 1, 2, 1, 0, 0, 0, time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfHour(start)
+		expected := time.Date(2000, 1, 2, 1, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfHour(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.Local)
+		actual := EndOfHour(start)
+		expected := time.Date(2000, 1, 2, 1, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 1, 2, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfHour(start)
+		expected := time.Date(2000, 1, 2, 1, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestStartOfMonth(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 10, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfMonth(start)
+		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfMonth(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 1, 10, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfMonth(start)
+		expected := time.Date(2000, 1, 31, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+	{
+		start := time.Date(2000, 2, 10, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfMonth(start)
+		expected := time.Date(2000, 2, 29, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestStartOfYear(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 2, 10, 1, 1, 1, 111222333, time.UTC)
+		actual := StartOfYear(start)
+		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
+	}
+
+}
+
+func TestEndOfYear(t *testing.T) {
+	t.Parallel()
+
+	{
+		start := time.Date(2000, 2, 10, 1, 1, 1, 111222333, time.UTC)
+		actual := EndOfYear(start)
+		expected := time.Date(2000, 12, 31, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+		if !isEqual(actual, expected) {
+			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
+		}
 	}
 
 }
