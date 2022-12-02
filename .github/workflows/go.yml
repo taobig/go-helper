@@ -15,14 +15,14 @@ jobs:
         go: [ '1.15', '1.16', '1.17', '1.18' , '1.19' ]
     steps:
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
 #          go-version: ^1.13
           go-version: ${{ matrix.go }}
         id: go
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get dependencies
         run: |
@@ -38,6 +38,8 @@ jobs:
                go test -cover -v ./...
                go vet ./...
 #               golangci-lint run   #golangci-lint run --enable-all
+#               CI是通过golangci-lint.yml配置文件启用的
+
 
       - name: Test Parallel
       # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
