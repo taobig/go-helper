@@ -37,7 +37,7 @@ jobs:
         run: |
                go test -cover -v ./...
                go vet ./...
-               go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1 && golangci-lint run   #golangci-lint run --enable-all
+#               golangci-lint run   #golangci-lint run --enable-all
 
       - name: Test Parallel
       # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
