@@ -42,7 +42,7 @@ func TestMillSecToUtcTime(t *testing.T) {
 
 }
 
-func TestFormatNullableTime(t *testing.T) {
+func TestFormatTime(t *testing.T) {
 	{
 		var t1 time.Time = time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)
 		actual := FormatTime(&t1, time.RFC3339)
