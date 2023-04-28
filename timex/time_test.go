@@ -42,6 +42,27 @@ func TestMillSecToUtcTime(t *testing.T) {
 
 }
 
+func TestFormatNullableTime(t *testing.T) {
+	{
+		var t1 time.Time = time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)
+		actual := FormatTime(&t1, time.RFC3339)
+		expected := "2022-01-01T00:00:00Z"
+		if actual != expected {
+			t.Errorf("actual:%s; expected %s", actual, expected)
+		}
+	}
+
+	{
+		var t1 *time.Time = nil
+		actual := FormatTime(t1, time.RFC3339)
+		expected := ""
+		if actual != expected {
+			t.Errorf("actual:%s; expected %s", actual, expected)
+		}
+	}
+
+}
+
 func isEqual(actual, expected time.Time) bool {
 	//if actual.Year() != expected.Year() || actual.Month() != expected.Month() || actual.Day() != expected.Day() ||
 	//	actual.Hour() != expected.Hour() || actual.Minute() != expected.Minute() ||

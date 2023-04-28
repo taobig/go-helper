@@ -14,6 +14,13 @@ func MillSecToUtcTime(ts int64) time.Time {
 	return MillSecToTime(ts).UTC() //or return MillSecToTime(ts).In(time.UTC)
 }
 
+func FormatTime(t *time.Time, layout string) string {
+	if t == nil {
+		return ""
+	}
+	return t.Format(layout)
+}
+
 func StartOfDay(t time.Time) time.Time {
 	y, m, d := t.Date()
 	return time.Date(y, m, d, 0, 0, 0, 0, t.Location())
