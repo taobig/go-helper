@@ -1,6 +1,7 @@
 package http
 
 import (
+	"os"
 	"testing"
 )
 
@@ -21,6 +22,7 @@ func TestDownloadFile(t *testing.T) {
 			t.Errorf("DownloadFile(%v) error:%v", url, err.Error())
 		} else {
 			t.Log(path)
+			os.Remove(path)
 		}
 	}
 
