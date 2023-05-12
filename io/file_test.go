@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestPathExist(t *testing.T) {
@@ -40,7 +42,6 @@ func TestPathExist(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestWriteFileAndReadFile(t *testing.T) {
@@ -67,4 +68,30 @@ func TestWriteFileAndReadFile(t *testing.T) {
 		}
 	}
 
+}
+
+func TestCreateFileParentDir(t *testing.T) {
+	filepath := os.TempDir() + "/" + strconv.FormatInt(time.Now().Unix(), 10) + "/a/b/c/d"
+	filepath2 := filepath + "/e"
+	{
+		err := CreateParentDir(filepath)
+		if err != nil {
+			t.Fatalf("create dir a/b/c error: %v", err)
+		}
+
+		err = WriteFile(filepath, []byte("content"), 0644)
+		if err != nil {
+			t.Fatalf("create file %s error: %v", filepath, err)
+		}
+		defer func() {
+			os.Remove(filepath)
+		}()
+
+		err = CreateParentDir(filepath2)
+		if err != nil {
+			// expected
+		} else {
+			t.Fatal("CreateParentDir without error")
+		}
+	}
 }

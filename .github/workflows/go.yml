@@ -38,7 +38,7 @@ jobs:
         run: |
                go test -cover -v ./...
                go vet ./...
-#               golangci-lint run   #golangci-lint run --enable-all
+#               golangci-lint run   #golangci-lint run --enable-all 如果手动执行，需要提前下载golangci-lint
 #               CI是通过golangci-lint.yml配置文件启用的
 
 

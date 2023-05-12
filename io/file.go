@@ -1,21 +1,9 @@
 package io
 
 import (
-	"io/ioutil"
 	"os"
+	"path/filepath"
 )
-
-// Deprecated 使用原生的ioutil.ReadFile(<Go1.16) or os.ReadFile(>=Go1.16)
-func ReadFile(filePath string) ([]byte, error) {
-	data, err := ioutil.ReadFile(filePath)
-	return data, err
-}
-
-// Deprecated 使用原生的ioutil.WriteFile(<Go1.16) or os.WriteFile(>=Go1.16)
-func WriteFile(filePath string, content []byte, perm os.FileMode) error {
-	err := ioutil.WriteFile(filePath, content, perm)
-	return err
-}
 
 func PathExist(path string) (bool, error) {
 	if _, err := os.Stat(path); err == nil {
@@ -27,4 +15,11 @@ func PathExist(path string) (bool, error) {
 	} else {
 		return false, err
 	}
+}
+
+func CreateParentDir(filePath string) error {
+	dir := filepath.Dir(filePath)
+	// If path is already a directory, MkdirAll does nothing and returns nil.
+	err := os.MkdirAll(dir, os.ModePerm)
+	return err
 }
