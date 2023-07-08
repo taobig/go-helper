@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-var cstZone = time.FixedZone("GMT", 8*3600) // UTC+08
-
 func TestMillSecToTime(t *testing.T) {
 	var ts int64 = 1640995200123 // 2022-01-01 00:00:00.123 +0000 UTC
 
@@ -18,7 +16,7 @@ func TestMillSecToTime(t *testing.T) {
 		}
 	}
 	{
-		actual := MillSecToTime(ts).In(cstZone).Format(time.RFC3339Nano)
+		actual := MillSecToTime(ts).In(ChinaStandardTimeZone).Format(time.RFC3339Nano)
 		expected := "2022-01-01T08:00:00.123+08:00"
 		if actual != expected {
 			t.Errorf("actual:%s; expected %s", actual, expected)

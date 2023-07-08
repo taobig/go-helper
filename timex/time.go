@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+var ChinaStandardTimeZone = time.FixedZone("GMT", 8*3600) // UTC+08
+
 func MillSecToTime(ts int64) time.Time {
 	second := ts / 1000
 	millSecond := ts % 1000
