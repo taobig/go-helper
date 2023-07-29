@@ -1,6 +1,7 @@
 package timex
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
@@ -11,17 +12,12 @@ func TestMillSecToTime(t *testing.T) {
 	{
 		actual := MillSecToTime(ts + 1).UTC().Format(time.RFC3339Nano)
 		expected := "2022-01-01T00:00:00.124Z"
-		if actual != expected {
-			t.Errorf("actual:%s; expected %s", actual, expected)
-		}
+		assert.Equal(t, expected, actual, "they should be equal")
 	}
 	{
 		actual := MillSecToTime(ts).In(ChinaStandardTimeZone).Format(time.RFC3339Nano)
 		expected := "2022-01-01T08:00:00.123+08:00"
-		if actual != expected {
-			t.Errorf("actual:%s; expected %s", actual, expected)
-		}
-		//t.Log(actual)
+		assert.Equal(t, expected, actual, "they should be equal")
 	}
 
 }
