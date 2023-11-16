@@ -135,3 +135,73 @@ func TestWriteJsonFile(t *testing.T) {
 	}()
 
 }
+
+func TestWriteCsvFile(t *testing.T) {
+	var err error
+	{
+		filename := "test.csv"
+		// this defines the header value and data values for the new csv file
+		headers := []string{"name", "age", "sex"}
+		data := [][]string{
+			{"Alice", "25", "Female"},
+			{"Bob", "30", "Male"},
+			{"Charlie", "35", "Male"},
+		}
+		err = WriteCsvFile(filename, headers, data)
+		require.NoError(t, err)
+		err = os.Remove(filename)
+		require.NoError(t, err)
+	}
+
+	{
+		filename := "test.csv"
+		// this defines the header value and data values for the new csv file
+		headers := []string{"name", "desc"}
+		data := [][]string{
+			{"Alice", "hello, ' world"},   // data contains comma and single quote
+			{"Bob", "hello, \" world"},    // data contains comma and double quote
+			{"Charlie", "hello, ` world"}, // data contains comma and back quote
+		}
+		err = WriteCsvFile(filename, headers, data)
+		require.NoError(t, err)
+		err = os.Remove(filename)
+		require.NoError(t, err)
+	}
+
+	{
+		filename := "dir/test.csv"
+		// this defines the header value and data values for the new csv file
+		headers := []string{"name", "desc"}
+		data := [][]string{
+			{"Alice", "hello, ' world"},   // data contains comma and single quote
+			{"Bob", "hello, \" world"},    // data contains comma and double quote
+			{"Charlie", "hello, ` world"}, // data contains comma and back quote
+		}
+		err = WriteCsvFile(filename, headers, data)
+		require.ErrorContains(t, err, "no such file or directory")
+	}
+
+	{
+		filename := "dir/test.csv"
+		// this defines the header value and data values for the new csv file
+		headers := []string{"name", "desc"}
+		data := [][]string{
+			{"Alice", "hello, ' world"},   // data contains comma and single quote
+			{"Bob", "hello, \" world"},    // data contains comma and double quote
+			{"Charlie", "hello, ` world"}, // data contains comma and back quote
+		}
+		option := &Option{
+			AutoCreateParentDir: true,
+			DirPerm:             os.ModePerm,
+		}
+		err = WriteCsvFile(filename, headers, data, option)
+		require.NoError(t, err)
+		defer func() {
+			err = os.Remove(filename)
+			require.NoError(t, err)
+
+			err = os.RemoveAll(filepath.Dir(filename))
+			require.NoError(t, err)
+		}()
+	}
+}
