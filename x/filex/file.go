@@ -7,6 +7,22 @@ import (
 	"path/filepath"
 )
 
+var (
+	AutoCreateParentDirOption = &Option{AutoCreateParentDir: true, DirPerm: os.ModePerm}
+
+	AutoCreateParentDirJsonOption = &JsonOption{
+		Option:           *AutoCreateParentDirOption,
+		UseMarshalIndent: false,
+	}
+
+	MarshalIndentJsonOption = &JsonOption{
+		Option:              *AutoCreateParentDirOption,
+		UseMarshalIndent:    true,
+		MarshalIndentPrefix: "",
+		MarshalIndentIndent: "  ",
+	}
+)
+
 type Option struct {
 	AutoCreateParentDir bool
 	DirPerm             os.FileMode
@@ -123,4 +139,21 @@ func WriteCsvFile(filename string, headers []string, data [][]string, options ..
 	}
 
 	return nil
+}
+
+func ReadCsvFile(filename string) ([][]string, error) {
+	var err error
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	rows, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	return rows, err
 }
