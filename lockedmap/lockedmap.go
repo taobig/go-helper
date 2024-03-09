@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// LockedMap Thread-safe map with generics support
 type LockedMap[K comparable, V any] struct {
 	data map[K]V
 	mu   sync.RWMutex
