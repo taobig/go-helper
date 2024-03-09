@@ -5,11 +5,14 @@ on:
   push:
     #    branches: [ master ]
     branches:
-      - '*'
+#      - '*'         # Matches zero or more characters, but does not match the / character. https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+#      - '*/*'       # Matches every branch containing a single '/'
+      - '**'        # Matches zero or more of any character.
+#      - '!master'   # Excludes master
   pull_request:
     #    branches: [ master ]
     branches:
-      - '*'
+      - '**'
 
 jobs:
   golangci:
