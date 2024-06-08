@@ -3,9 +3,9 @@ module github.com/taobig/go-helper
 go 1.18
 
 require (
-	github.com/stretchr/testify v1.8.4
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
-	golang.org/x/text v0.14.0
+	github.com/stretchr/testify v1.9.0
+	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
+	golang.org/x/text v0.16.0
 )
 
 require (
