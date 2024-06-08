@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -13,5 +14,5 @@ func TestGetCurrentDir(t *testing.T) {
 }
 
 func TestListDir(t *testing.T) {
-	t.Log(listDir("."))
+	assert.True(t, len(listDir(".")) > 0)
 }
