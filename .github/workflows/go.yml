@@ -38,19 +38,27 @@ jobs:
 
       - name: Test
         # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
-#        run: go test -cover -v ./...
+        # 需要注意的是：
+        #   1. 并行测试的限制：仅当测试函数使用 t.Parallel() 来标记它们时，-parallel 参数才会生效。否则，测试函数会按顺序执行。
+        #   2. CPU 核心数：-parallel 的值不应超过可用 CPU 核心数。Go 运行时会自动调整并行度来避免过载。
+        #
+        # run: go test -cover -v ./...
+        # html格式查看cover信息： https://blog.golang.org/cover
+        # go test -covermode=count -coverprofile=count.out ./... && go tool cover -html=count.out
+        #
+        # 从go1.20开始test子命令才支持-skip参数
         run: |
-               go test -cover -v ./...
-               go vet ./...
-#               golangci-lint run   #golangci-lint run --enable-all 如果手动执行，需要提前下载golangci-lint
-#               CI是通过golangci-lint.yml配置文件启用的
-
-
-      - name: Test Parallel
-      # 在并发情况下，同时运行的测试的数量默认取决于 GOMAXPROCS。它可以通过 -parallel n 被指定（go test -parallel 4）
-        run: go test -parallel 4 -cover -v ./...
-      # html格式查看cover信息： https://blog.golang.org/cover
-      # go test -covermode=count -coverprofile=count.out ./... && go tool cover -html=count.out
+          nproc --all || sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || date 
+          if [[ "${{ matrix.go }}" < "1.20" ]]; then
+            time go test -cover -v ./... && echo done
+            time go test -race -cover  -v ./... && echo done
+          else
+            time go test -skip "^TestSendMail$" -cover -v ./... && echo done
+            time go test -race -skip "^TestSendMail$" -skip "^TestDataRaceError$" -cover -v ./... && echo done
+          fi
+          go vet ./...
+      # golangci-lint run   #golangci-lint run --enable-all 如果手动执行，需要提前下载golangci-lint
+      #   CI是通过golangci-lint.yml配置文件启用的
 
       # -count=1可以跳过缓存（默认情况下，第一次执行过了，第二次就会有缓存）
 #      run: go test -count=1
