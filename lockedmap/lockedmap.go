@@ -80,3 +80,14 @@ func (m *LockedMap[K, V]) Values() []V {
 
 	return maps.Values(m.data)
 }
+
+func (m *LockedMap[K, V]) Range(f func(key K, value V) bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for key, value := range m.data {
+		if !f(key, value) {
+			break
+		}
+	}
+}

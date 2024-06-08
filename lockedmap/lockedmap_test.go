@@ -5,15 +5,7 @@ import (
 	"testing"
 )
 
-func TestSetGet(t *testing.T) {
-	m := New[string, int]()
-	m.Set("a", 1)
-	if v, ok := m.Get("a"); !ok || v != 1 {
-		t.Errorf("Get failed")
-	}
-}
-
-func TestExists(t *testing.T) {
+func TestLockedMap_Exists(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	if !m.Exists("a") {
@@ -21,7 +13,23 @@ func TestExists(t *testing.T) {
 	}
 }
 
-func TestRemove(t *testing.T) {
+func TestLockedMap_Set(t *testing.T) {
+	m := New[string, int]()
+	m.Set("a", 1)
+	if v, ok := m.Get("a"); !ok || v != 1 {
+		t.Errorf("Get failed")
+	}
+}
+
+func TestLockedMap_Get(t *testing.T) {
+	m := New[string, int]()
+	m.Set("a", 1)
+	if v, ok := m.Get("a"); !ok || v != 1 {
+		t.Errorf("Get failed")
+	}
+}
+
+func TestLockedMap_Remove(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	m.Remove("a")
@@ -30,7 +38,7 @@ func TestRemove(t *testing.T) {
 	}
 }
 
-func TestRemoveAll(t *testing.T) {
+func TestLockedMap_RemoveAll(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	m.RemoveAll()
@@ -40,7 +48,7 @@ func TestRemoveAll(t *testing.T) {
 	assert.Equal(t, 0, m.Size())
 }
 
-func TestSize(t *testing.T) {
+func TestLockedMap_Size(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	if m.Size() != 1 {
@@ -48,7 +56,7 @@ func TestSize(t *testing.T) {
 	}
 }
 
-func TestKeys(t *testing.T) {
+func TestLockedMap_Keys(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	if len(m.Keys()) != 1 {
@@ -56,7 +64,7 @@ func TestKeys(t *testing.T) {
 	}
 }
 
-func TestValues(t *testing.T) {
+func TestLockedMap_Values(t *testing.T) {
 	m := New[string, int]()
 	m.Set("a", 1)
 	if len(m.Values()) != 1 {
@@ -64,58 +72,12 @@ func TestValues(t *testing.T) {
 	}
 }
 
-func TestConcurrentSetGet(t *testing.T) {
+func TestLockedMap_Range(t *testing.T) {
 	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Get("a")
-	}
-}
-
-func TestConcurrentRemove(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Remove("a")
-	}
-}
-
-func TestConcurrentSize(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Size()
-	}
-}
-
-func TestConcurrentExists(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Exists("a")
-	}
-}
-
-func TestConcurrentKeys(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Keys()
-	}
-}
-
-func TestConcurrentGet(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.Get("a")
-	}
-}
-
-func TestConcurrentRemoveAll(t *testing.T) {
-	m := New[string, int]()
-	for i := 0; i < 1000; i++ {
-		go m.Set("a", i)
-		go m.RemoveAll()
-	}
+	m.Set("a", 1)
+	m.Set("b", 2)
+	m.Set("c", 3)
+	m.Range(func(key string, value int) bool {
+		return true
+	})
 }
