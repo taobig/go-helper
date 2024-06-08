@@ -46,17 +46,16 @@ jobs:
         # html格式查看cover信息： https://blog.golang.org/cover
         # go test -covermode=count -coverprofile=count.out ./... && go tool cover -html=count.out
         #
-        # 从go1.20开始test子命令才支持-skip参数
+        # 从go1.20开始test子命令才支持-skip参数，但是test的-skip和-race不能同时使用
         run: |
-          nproc --all || sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || date 
+          go vet ./...
+          nproc --all || sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || date
           if [[ "${{ matrix.go }}" < "1.20" ]]; then
-            time go test -cover -v ./... && echo done
-            time go test -race -cover  -v ./... && echo done
+            time SKIP_TEST_SEND_MAIL=1 go test -cover -v ./... && echo done
           else
             time go test -skip "^TestSendMail$" -cover -v ./... && echo done
-            time go test -race -skip "^TestSendMail$" -skip "^TestDataRaceError$" -cover -v ./... && echo done
           fi
-          go vet ./...
+          time SKIP_TEST_SEND_MAIL=1 go test -race -cover -v ./... && echo done
       # golangci-lint run   #golangci-lint run --enable-all 如果手动执行，需要提前下载golangci-lint
       #   CI是通过golangci-lint.yml配置文件启用的
 

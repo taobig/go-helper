@@ -1,10 +1,14 @@
 package mailx
 
 import (
+	"os"
 	"testing"
 )
 
 func TestSendMail(t *testing.T) {
+	if os.Getenv("SKIP_TEST_SEND_MAIL") != "" {
+		t.Skip("skip test send mail")
+	}
 	mail := NewSMTPMail("user@qq.com", "password", "smtp.qq.com", 587)
 	receivers := []string{"user@163.com"}
 	body := `
