@@ -23,3 +23,15 @@ func CreateParentDir(filePath string) error {
 	err := os.MkdirAll(dir, os.ModePerm)
 	return err
 }
+
+func AppendFile(filename string, content string, perm os.FileMode) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, perm)
+	if err != nil {
+		return err
+	}
+	_, err = f.WriteString(content)
+	if err1 := f.Close(); err1 != nil && err == nil {
+		err = err1
+	}
+	return err
+}

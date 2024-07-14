@@ -3,6 +3,7 @@ package io
 import (
 	"bytes"
 	"fmt"
+	"github.com/stretchr/testify/require"
 	"math/rand"
 	"os"
 	"strconv"
@@ -54,20 +55,22 @@ func TestWriteFileAndReadFile(t *testing.T) {
 		t.Errorf("WriteFile to %v error:%v", path, err.Error())
 	} else {
 		content, err := ReadFile(path)
-		if err != nil {
-			t.Errorf("ReadFile(%v) error:%v", path, err.Error())
-		} else {
-			if !bytes.Equal(content, expected) {
-				t.Fatal("WriteFile != ReadFile")
-			}
-			//t.Logf("file content:%v", string(content))
-			err = os.Remove(path)
-			if err != nil {
-				t.Errorf("remove(%v) error:%v", path, err.Error())
-			}
-		}
-	}
+		require.NoError(t, err)
 
+		if !bytes.Equal(content, expected) {
+			t.Fatal("WriteFile != ReadFile")
+		}
+
+		err = AppendFile(path, " world\n", 0644)
+		require.NoError(t, err)
+		content, err = ReadFile(path)
+		require.NoError(t, err)
+		require.Equal(t, "hello world\n", string(content))
+
+		//t.Logf("file content:%v", string(content))
+		err = os.Remove(path)
+		require.NoErrorf(t, err, "remove(%v) error failed", path)
+	}
 }
 
 func TestCreateFileParentDir(t *testing.T) {
