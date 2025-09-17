@@ -1,9 +1,10 @@
 package timex
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMillSecToTime(t *testing.T) {
@@ -72,7 +73,7 @@ func TestStartOfDay(t *testing.T) {
 		actual := StartOfDay(start)
 		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -82,7 +83,7 @@ func TestStartOfDay(t *testing.T) {
 		actual := StartOfDay(start)
 		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -97,7 +98,7 @@ func TestTomorrow(t *testing.T) {
 		actual := StartOfTomorrow(start)
 		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -107,7 +108,7 @@ func TestTomorrow(t *testing.T) {
 		actual := StartOfTomorrow(start)
 		expected := time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -122,7 +123,7 @@ func TestYesterday(t *testing.T) {
 		actual := StartOfYesterday(start)
 		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -132,7 +133,7 @@ func TestYesterday(t *testing.T) {
 		actual := StartOfYesterday(start)
 		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -147,7 +148,7 @@ func TestEndOfDay(t *testing.T) {
 		actual := EndOfDay(start)
 		expected := time.Date(2000, 1, 2, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -157,7 +158,7 @@ func TestEndOfDay(t *testing.T) {
 		actual := EndOfDay(start)
 		expected := time.Date(2000, 1, 2, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -172,7 +173,7 @@ func TestEndOfTomorrow(t *testing.T) {
 		actual := EndOfTomorrow(start)
 		expected := time.Date(2000, 1, 3, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -182,7 +183,7 @@ func TestEndOfTomorrow(t *testing.T) {
 		actual := EndOfTomorrow(start)
 		expected := time.Date(2000, 1, 3, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -197,7 +198,7 @@ func TestEndOfYesterday(t *testing.T) {
 		actual := EndOfYesterday(start)
 		expected := time.Date(2000, 1, 1, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -207,7 +208,7 @@ func TestEndOfYesterday(t *testing.T) {
 		actual := EndOfYesterday(start)
 		expected := time.Date(2000, 1, 1, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -222,7 +223,7 @@ func TestStartOfHour(t *testing.T) {
 		actual := StartOfHour(start)
 		expected := time.Date(2000, 1, 2, 1, 0, 0, 0, time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -232,7 +233,7 @@ func TestStartOfHour(t *testing.T) {
 		actual := StartOfHour(start)
 		expected := time.Date(2000, 1, 2, 1, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -247,7 +248,7 @@ func TestEndOfHour(t *testing.T) {
 		actual := EndOfHour(start)
 		expected := time.Date(2000, 1, 2, 1, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -257,7 +258,7 @@ func TestEndOfHour(t *testing.T) {
 		actual := EndOfHour(start)
 		expected := time.Date(2000, 1, 2, 1, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -272,7 +273,7 @@ func TestStartOfMonth(t *testing.T) {
 		actual := StartOfMonth(start)
 		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -287,7 +288,7 @@ func TestEndOfMonth(t *testing.T) {
 		actual := EndOfMonth(start)
 		expected := time.Date(2000, 1, 31, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -297,7 +298,7 @@ func TestEndOfMonth(t *testing.T) {
 		actual := EndOfMonth(start)
 		expected := time.Date(2000, 2, 29, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -312,7 +313,7 @@ func TestStartOfYear(t *testing.T) {
 		actual := StartOfYear(start)
 		expected := time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
@@ -327,7 +328,7 @@ func TestEndOfYear(t *testing.T) {
 		actual := EndOfYear(start)
 		expected := time.Date(2000, 12, 31, 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 		if !isEqual(actual, expected) {
-			t.Logf("time is " + start.Format(time.RFC3339Nano))
+			t.Logf("time is %s", start.Format(time.RFC3339Nano))
 			t.Errorf("actual:%s; expected %s", actual.Format(time.RFC3339Nano), expected.Format(time.RFC3339Nano))
 		}
 	}
