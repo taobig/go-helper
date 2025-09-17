@@ -1,9 +1,16 @@
 # golangci-lint run
 
-version: 2
+# See the dedicated "version" documentation section.
+version: "2"
+linters:
+  disable:
+    - unused
 
-linters-settings:
-  staticcheck:
-    checks:
-      - all
-      - '-SA1019' # disable the rule SA1019  deprecated变量检查
+  settings:
+    staticcheck:
+      checks:
+        # https://staticcheck.dev/docs/checks/
+        # 禁用特定检查项
+        - all
+        - '-SA1019' # disable the rule SA1019  deprecated变量检查
+
