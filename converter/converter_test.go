@@ -1,9 +1,10 @@
 package converter
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func checkError(t *testing.T, err error) {
