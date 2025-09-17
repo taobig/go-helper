@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.18' , '1.19'  , '1.20' , '1.21' , '1.22']
+        go: [ '1.21' , '1.22', '1.23', '1.24']
 #        https://github.com/actions/setup-go?tab=readme-ov-file#using-stableoldstable-aliases
 #        If stable is provided, action will get the latest stable version from the go-versions repository manifest.
 #        If oldstable is provided, when current release is 1.19.x, action will resolve version as 1.18.x, where x is the latest patch release.
